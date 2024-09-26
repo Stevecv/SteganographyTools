@@ -1,4 +1,6 @@
 from PIL import Image
+import requests
+
 
 
 def menu():
@@ -7,8 +9,11 @@ def menu():
     inp = input("  > ")
 
     if inp == "1":
-        image_path = input("Enter the image path > ")
-        image = Image.open(image_path)
+        image_path = input("Enter the image path or url > ")
+        if image_path.startswith("http"):
+            image = Image.open(requests.get(image_path, stream=True).raw)
+        else:
+            image = Image.open(image_path)
         image.convert("RGB")
         loaded_image = image.load()
 
@@ -53,7 +58,9 @@ def menu():
             start_index += 8
 
         name = input("Enter a name to save the image as > ")
-        image.save(name + ".png")
+        if not name.endswith(".png"):
+            name += ".png"
+        image.save(name)
 
     if inp == "2":
         image_path = input("Enter the image path > ")
