@@ -1,6 +1,12 @@
 from PIL import Image
 import requests
 
+def get_image(path):
+    if path.startswith("http"):
+        image = Image.open(requests.get(path, stream=True).raw)
+    else:
+        image = Image.open(path)
+    return image
 
 
 def menu():
@@ -10,10 +16,7 @@ def menu():
 
     if inp == "1":
         image_path = input("Enter the image path or url > ")
-        if image_path.startswith("http"):
-            image = Image.open(requests.get(image_path, stream=True).raw)
-        else:
-            image = Image.open(image_path)
+        image = get_image(image_path)
         image.convert("RGB")
         loaded_image = image.load()
 
@@ -63,8 +66,8 @@ def menu():
         image.save(name)
 
     if inp == "2":
-        image_path = input("Enter the image path > ")
-        image = Image.open(image_path)
+        image_path = input("Enter the image path or url> ")
+        image = get_image(image_path)
         image.convert("RGB")
         loaded_image = image.load()
 
